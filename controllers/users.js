@@ -56,7 +56,7 @@ const createUser = (req, res) => {
 const updateAvatar = (req, res) => {
   const userId = req.user._id
   const { avatar } = req.body
-  return User.findByIdAndUpdate(userId, { avatar }, { new: true })
+  return User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
   .orFail()
   .then((user) => {
       return res.status(OK_STATUS).send(user)
@@ -76,7 +76,7 @@ const updateAvatar = (req, res) => {
 const updateUserInfo = (req, res) => {
   const userId = req.user._id
   const { name, about } = req.body
-  return User.findByIdAndUpdate(userId, { name, about }, { new: true })
+  return User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true  })
   .orFail()
   .then((user) => {
     return res.status(OK_STATUS).send(user)

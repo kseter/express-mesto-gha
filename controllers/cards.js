@@ -63,8 +63,9 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+  .populate(['owner', 'likes'])
   .then((card) => {
-    return res.send(card)
+    return res.status(OK_STATUS).send(card)
   })
   .catch((err) => {
     console.log(mongoose.Error);
@@ -84,8 +85,9 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+  .orFail()
   .then((card) => {
-    return res.status(201).send(card)
+    return res.status(OK_STATUS).send(card)
   })
   .catch((err) => {
     console.log(mongoose.Error);
