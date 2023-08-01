@@ -63,6 +63,7 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+  .orFail()
   .populate(['owner', 'likes'])
   .then((card) => {
     return res.status(OK_STATUS).send(card)

@@ -67,6 +67,8 @@ const updateAvatar = (req, res) => {
      return res.status(BAD_REQUEST).send({ message: `Некорректный ID`})
     } else if(err instanceof mongoose.Error.DocumentNotFoundError){
       return res.status(NOT_FOUND).send({ message: 'Пользователь не найден'})
+    } else if(err instanceof mongoose.Error.ValidationError){
+      return res.status(BAD_REQUEST).send({ message: 'Некорректно введены данные'})
     } else {
      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
     }
@@ -87,6 +89,8 @@ const updateUserInfo = (req, res) => {
        return res.status(BAD_REQUEST).send({ message: `Некорректный ID`})
       } else if(err instanceof mongoose.Error.DocumentNotFoundError){
         return res.status(NOT_FOUND).send({ message: 'Пользователь не найден'})
+      } else if(err instanceof mongoose.Error.ValidationError){
+        return res.status(BAD_REQUEST).send({ message: 'Некорректно введены данные'})
       } else {
        return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
       }
