@@ -1,0 +1,13 @@
+const BAD_REQUEST = 400;
+const NOT_FOUND = 404;
+const SERVER_ERROR = 500;
+const OK_STATUS = 200;
+const CREATED_STATUS = 201;
+
+module.exports = {
+  BAD_REQUEST,
+  NOT_FOUND,
+  SERVER_ERROR,
+  OK_STATUS,
+  CREATED_STATUS
+}
