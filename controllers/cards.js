@@ -7,13 +7,8 @@ const getCards = (req, res) => {
   .then((cards) => {
     return res.status(OK_STATUS).send(cards)
   })
-  .catch((err) => {
-    console.log(mongoose.Error);
-    if(err instanceof mongoose.Error.DocumentNotFoundError) {
-     return res.status(NOT_FOUND).send({ message: 'Карточки не найдены'})
-    } else {
+  .catch(() => {
      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
-    }
   })
 };
 

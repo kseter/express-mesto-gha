@@ -9,14 +9,9 @@ const getUsers = (req, res) => {
       return res.status(OK_STATUS).send(users)
     }
   })
-  .catch((err) => {
-    console.log(mongoose.Error);
-    if(err instanceof mongoose.Error.DocumentNotFoundError) {
-     return res.status(NOT_FOUND).send({ message: 'Пользователи не найдены'})
-    } else {
+  .catch(() => {
      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
-    }
-  })
+    })
 };
 
 const getUserByID = (req, res) => {
@@ -63,9 +58,7 @@ const updateAvatar = (req, res) => {
   })
   .catch((err) => {
     console.log(mongoose.Error);
-    if(err instanceof mongoose.Error.CastError) {
-     return res.status(BAD_REQUEST).send({ message: `Некорректный ID`})
-    } else if(err instanceof mongoose.Error.DocumentNotFoundError){
+    if(err instanceof mongoose.Error.DocumentNotFoundError){
       return res.status(NOT_FOUND).send({ message: 'Пользователь не найден'})
     } else if(err instanceof mongoose.Error.ValidationError){
       return res.status(BAD_REQUEST).send({ message: 'Некорректно введены данные'})
@@ -85,9 +78,7 @@ const updateUserInfo = (req, res) => {
     })
     .catch((err) => {
       console.log(mongoose.Error);
-      if(err instanceof mongoose.Error.CastError) {
-       return res.status(BAD_REQUEST).send({ message: `Некорректный ID`})
-      } else if(err instanceof mongoose.Error.DocumentNotFoundError){
+        if(err instanceof mongoose.Error.DocumentNotFoundError){
         return res.status(NOT_FOUND).send({ message: 'Пользователь не найден'})
       } else if(err instanceof mongoose.Error.ValidationError){
         return res.status(BAD_REQUEST).send({ message: 'Некорректно введены данные'})
