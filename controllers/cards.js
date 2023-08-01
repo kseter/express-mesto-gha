@@ -28,6 +28,8 @@ const deleteCard = (req, res) => {
     console.log(mongoose.Error);
     if(err instanceof mongoose.Error.DocumentNotFoundError) {
      return res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена'})
+    } else if(err instanceof mongoose.Error.CastError){
+      return res.status(BAD_REQUEST).send({ message: 'Неверный ID'})
     } else {
      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
     }
@@ -66,10 +68,10 @@ const likeCard = (req, res) => {
   })
   .catch((err) => {
     console.log(mongoose.Error);
-    if(err instanceof mongoose.Error.ValidationError) {
-     return res.status(BAD_REQUEST).send({ message: `Переданы некорректные данные при установки лайка`})
-    } else if(err instanceof mongoose.Error.DocumentNotFoundError){
-      return res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена'})
+    if(err instanceof mongoose.Error.DocumentNotFoundError) {
+     return res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена'})
+    } else if(err instanceof mongoose.Error.CastError){
+      return res.status(BAD_REQUEST).send({ message: 'Неверный ID'})
     } else {
      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
     }
@@ -87,10 +89,10 @@ const dislikeCard = (req, res) => {
   })
   .catch((err) => {
     console.log(mongoose.Error);
-    if(err instanceof mongoose.Error.ValidationError) {
-     return res.status(BAD_REQUEST).send({ message: `Переданы некорректные данные при установки лайка`})
-    } else if(err instanceof mongoose.Error.DocumentNotFoundError){
-      return res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена'})
+    if(err instanceof mongoose.Error.DocumentNotFoundError) {
+     return res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена'})
+    } else if(err instanceof mongoose.Error.CastError){
+      return res.status(BAD_REQUEST).send({ message: 'Неверный ID'})
     } else {
      return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
     }

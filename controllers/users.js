@@ -24,9 +24,6 @@ const getUserByID = (req, res) => {
   return User.findById(userId)
   .orFail()
   .then((user) => {
-    // if(!user){
-    //   return res.status(404).send('User is not found')
-    // }
     return res.status(OK_STATUS).send(user)
   })
   .catch((err) => {
@@ -57,12 +54,12 @@ const createUser = (req, res) => {
 };
 
 const updateAvatar = (req, res) => {
-  const { userId } = req.user._id
+  const userId = req.user._id
   const { avatar } = req.body
   return User.findByIdAndUpdate(userId, { avatar }, { new: true })
   .orFail()
   .then((user) => {
-      return res.send(user)
+      return res.status(OK_STATUS).send(user)
   })
   .catch((err) => {
     console.log(mongoose.Error);
@@ -77,12 +74,12 @@ const updateAvatar = (req, res) => {
 };
 
 const updateUserInfo = (req, res) => {
+  const userId = req.user._id
   const { name, about } = req.body
-  const { userId } = req.user._id
   return User.findByIdAndUpdate(userId, { name, about }, { new: true })
   .orFail()
   .then((user) => {
-    return res.send(user)
+    return res.status(OK_STATUS).send(user)
     })
     .catch((err) => {
       console.log(mongoose.Error);
