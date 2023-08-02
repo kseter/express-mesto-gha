@@ -20,12 +20,12 @@ const cardSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     default: '',
     ref: 'user',
-      },
+  },
   ],
   createAt: {
     type: Date,
     default: Date.now,
   },
-})
+});
 
-module.exports = mongoose.model('card', cardSchema)
+module.exports = mongoose.model('card', cardSchema);

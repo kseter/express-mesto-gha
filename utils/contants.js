@@ -10,4 +10,4 @@ module.exports = {
   SERVER_ERROR,
   OK_STATUS,
   CREATED_STATUS,
-}
+};

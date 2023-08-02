@@ -3,13 +3,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 // const path = require('path');
 const PORT = 3000;
-const router = require('./routes')
-const { NOT_FOUND } = require('./utils/contants')
+const router = require('./routes');
+const { NOT_FOUND } = require('./utils/contants');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 }).then(() => {
-  console.log('connected to db')
+  console.log('connected to db');
 });
 
 const app = express();
@@ -33,8 +33,8 @@ app.use((req, res, next) => {
   res.status(NOT_FOUND).send({ message: 'Страница не найдена' });
 
   next();
-})
+});
 
 app.listen(PORT, () => {
-  console.log(`App has started on port ${PORT}...`)
-})
+  console.log(`App has started on port ${PORT}...`);
+});
