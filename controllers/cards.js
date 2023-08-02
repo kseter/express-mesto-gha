@@ -1,6 +1,8 @@
-const Card = require('../models/cards')
 const { default: mongoose } = require('mongoose');
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR, OK_STATUS, CREATED_STATUS } = require('../utils/contants.js')
+const Card = require('../models/cards')
+const {
+  BAD_REQUEST, NOT_FOUND, SERVER_ERROR, OK_STATUS, CREATED_STATUS,
+} = require('../utils/contants')
 
 const getCards = (req, res) => {
   return Card.find()
@@ -8,7 +10,7 @@ const getCards = (req, res) => {
     return res.status(OK_STATUS).send(cards)
   })
   .catch(() => {
-     return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
+     return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' })
   })
 };
 
@@ -22,11 +24,11 @@ const deleteCard = (req, res) => {
   .catch((err) => {
     console.log(mongoose.Error);
     if(err instanceof mongoose.Error.DocumentNotFoundError) {
-     return res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена'})
-    } else if(err instanceof mongoose.Error.CastError){
-      return res.status(BAD_REQUEST).send({ message: 'Неверный ID'})
+     res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена' })
+    } else if(err instanceof mongoose.Error.CastError) {
+      res.status(BAD_REQUEST).send({ message: 'Неверный ID' })
     } else {
-     return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
+     res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' })
     }
   })
 };
@@ -37,7 +39,7 @@ const createCard = (req, res) => {
   return Card.create({
     name,
     link,
-    owner: req.user._id
+    owner: req.user._id,
   })
   .then((card) => {
     return res.status(CREATED_STATUS).send(card)
@@ -45,9 +47,9 @@ const createCard = (req, res) => {
   .catch((err) => {
     console.log(mongoose.Error);
     if(err instanceof mongoose.Error.ValidationError) {
-     return res.status(BAD_REQUEST).send({ message: `Переданы некорректные данные при создании карточки`})
+     res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки' })
     } else {
-     return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
+     res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' })
     }
   })
 };
@@ -66,11 +68,11 @@ const likeCard = (req, res) => {
   .catch((err) => {
     console.log(mongoose.Error);
     if(err instanceof mongoose.Error.DocumentNotFoundError) {
-     return res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена'})
-    } else if(err instanceof mongoose.Error.CastError){
-      return res.status(BAD_REQUEST).send({ message: 'Неверный ID'})
+     res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена' })
+    } else if(err instanceof mongoose.Error.CastError) {
+      res.status(BAD_REQUEST).send({ message: 'Неверный ID' })
     } else {
-     return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
+     res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' })
     }
   })
 };
@@ -88,11 +90,11 @@ const dislikeCard = (req, res) => {
   .catch((err) => {
     console.log(mongoose.Error);
     if(err instanceof mongoose.Error.DocumentNotFoundError) {
-     return res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена'})
-    } else if(err instanceof mongoose.Error.CastError){
-      return res.status(BAD_REQUEST).send({ message: 'Неверный ID'})
+      res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена' })
+    } else if(err instanceof mongoose.Error.CastError) {
+      res.status(BAD_REQUEST).send({ message: 'Неверный ID' })
     } else {
-     return res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка'})
+      res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' })
     }
   })
 };
@@ -102,7 +104,5 @@ module.exports = {
   deleteCard,
   createCard,
   likeCard,
-  dislikeCard
+  dislikeCard,
 }
-
-

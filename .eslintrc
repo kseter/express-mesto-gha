@@ -1,5 +1,0 @@
-{
-  "extends": "airbnb-base"
-}
-
-/* eslint no-underscore-dangle: 0 */

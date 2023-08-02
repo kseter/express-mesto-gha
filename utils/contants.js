@@ -9,5 +9,5 @@ module.exports = {
   NOT_FOUND,
   SERVER_ERROR,
   OK_STATUS,
-  CREATED_STATUS
+  CREATED_STATUS,
 }
