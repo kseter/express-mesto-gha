@@ -1,39 +1,41 @@
 const { default: mongoose } = require('mongoose');
 const Card = require('../models/cards');
 const {
-  BAD_REQUEST, NOT_FOUND, SERVER_ERROR, OK_STATUS, CREATED_STATUS,
+  OK_STATUS, CREATED_STATUS,
 } = require('../utils/contants');
+const NotFoundError = require('../errors/not-found-error');
+const BadRequestError = require('../errors/bad-request-error');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find()
     .then((cards) => {
       res.status(OK_STATUS).send(cards);
     })
-    .catch(() => {
-      res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
-    });
+    .catch((err) => next(err));
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findByIdAndDelete(cardId)
     .orFail()
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Карточка с таким ID не найдена');
+      } else if (card.owner._id !== req.user._id) {
+        throw new BadRequestError('Нет прав для удаления карточки');
+      }
       res.send(card);
     })
     .catch((err) => {
-      console.log(mongoose.Error);
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена' });
-      } else if (err instanceof mongoose.Error.CastError) {
-        res.status(BAD_REQUEST).send({ message: 'Неверный ID' });
+      if (err instanceof mongoose.Error.CastError) {
+        throw new BadRequestError('Неверный ID');
       } else {
-        res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+        next(err);
       }
     });
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   console.log(req.user._id);
   const { name, link } = req.body;
   Card.create({
@@ -47,14 +49,14 @@ const createCard = (req, res) => {
     .catch((err) => {
       console.log(mongoose.Error);
       if (err instanceof mongoose.Error.ValidationError) {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
+        throw new BadRequestError('Переданы некорректные данные при создании карточки');
       } else {
-        res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+        next(err);
       }
     });
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -63,21 +65,22 @@ const likeCard = (req, res) => {
     .orFail()
     .populate(['owner', 'likes'])
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Карточка с таким ID не найдена');
+      }
       res.status(OK_STATUS).send(card);
     })
     .catch((err) => {
       console.log(mongoose.Error);
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена' });
-      } else if (err instanceof mongoose.Error.CastError) {
-        res.status(BAD_REQUEST).send({ message: 'Неверный ID' });
+      if (err instanceof mongoose.Error.CastError) {
+        throw new BadRequestError('Неверный ID');
       } else {
-        res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+        next(err);
       }
     });
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -85,16 +88,17 @@ const dislikeCard = (req, res) => {
   )
     .orFail()
     .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Карточка с таким ID не найдена');
+      }
       res.status(OK_STATUS).send(card);
     })
     .catch((err) => {
       console.log(mongoose.Error);
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        res.status(NOT_FOUND).send({ message: 'Карточка с таким ID не найдена' });
-      } else if (err instanceof mongoose.Error.CastError) {
-        res.status(BAD_REQUEST).send({ message: 'Неверный ID' });
+      if (err instanceof mongoose.Error.CastError) {
+        throw new BadRequestError('Неверный ID');
       } else {
-        res.status(SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+        next(err);
       }
     });
 };

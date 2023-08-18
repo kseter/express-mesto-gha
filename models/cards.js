@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
+const { validationMessage } = require('../utils/contants');
 
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, validationMessage.minlength],
+    maxlength: [30, validationMessage.maxlength],
   },
   link: {
     type: String,
     required: true,
+    validate: {
+      validator: (url) => validator.isURL(url),
+      message: validationMessage.unvalidUrl,
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
