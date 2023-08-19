@@ -19,7 +19,9 @@ const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findById(cardId)
     .then((card) => {
-      if (card.owner.toString() !== req.user._id) {
+      if (!card) {
+        throw (new NotFoundError('Карточка с таким ID не найдена'));
+      } else if (card.owner.toString() !== req.user._id) {
         throw new NoRightsError('Нет прав для удаления карточки');
       }
       Card.findByIdAndRemove(cardId)
@@ -30,8 +32,6 @@ const deleteCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Неверный ID'));
-      } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Карточка с таким ID не найдена'));
       } else {
         next(err);
       }
