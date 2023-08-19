@@ -69,9 +69,6 @@ const createUser = (req, res, next) => {
       password: hash,
     })
       .then((user) => {
-        if (!user) {
-          throw new BadRequestError('Переданы некорректные данные при создании пользователя');
-        }
         res.status(CREATED_STATUS).send({
           name: user.name,
           about: user.about,
@@ -83,6 +80,8 @@ const createUser = (req, res, next) => {
       .catch((err) => {
         if (err.code === 11000) {
           next(new ConflictError('Пользователь с такие email уже зарегистрирован'));
+        } else if (err instanceof mongoose.Error.ValidationError) {
+          next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
         }
         next(err);
       }));
@@ -121,7 +120,6 @@ const updateUserInfo = (req, res, next) => {
       res.status(OK_STATUS).send(user);
     })
     .catch((err) => {
-      console.log(mongoose.Error);
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Некорректно введены данные'));
       } else {
