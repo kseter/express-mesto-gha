@@ -17,13 +17,15 @@ const getCards = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findByIdAndDelete(cardId)
-    .orFail()
+  Card.findById(cardId)
     .then((card) => {
-      if (card.owner !== req.user._id) {
+      if (card.owner.toString() !== req.user._id) {
         throw new NoRightsError('Нет прав для удаления карточки');
       }
-      res.status(OK_STATUS).send(card);
+      Card.findByIdAndRemove(cardId)
+        .then((removedCard) => {
+          res.send({ message: 'Карточка удалена', card: removedCard });
+        });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
