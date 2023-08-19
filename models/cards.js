@@ -5,13 +5,13 @@ const { validationMessage } = require('../utils/contants');
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, validationMessage.requared],
     minlength: [2, validationMessage.minlength],
     maxlength: [30, validationMessage.maxlength],
   },
   link: {
     type: String,
-    required: true,
+    required: [true, validationMessage.requared],
     validate: {
       validator: (url) => validator.isURL(url),
       message: validationMessage.unvalidUrl,

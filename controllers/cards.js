@@ -5,6 +5,7 @@ const {
 } = require('../utils/contants');
 const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
+const NoRightsError = require('../errors/no-rights-error');
 
 const getCards = (req, res, next) => {
   Card.find()
@@ -19,16 +20,16 @@ const deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(cardId)
     .orFail()
     .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Карточка с таким ID не найдена');
-      } else if (card.owner._id !== req.user._id) {
-        throw new BadRequestError('Нет прав для удаления карточки');
+      if (card.owner._id !== req.user._id) {
+        next(new NoRightsError('Нет прав для удаления карточки'));
       }
       res.send(card);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        throw new BadRequestError('Неверный ID');
+        next(new BadRequestError('Неверный ID'));
+      } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        next(new NotFoundError('Карточка с таким ID не найдена'));
       } else {
         next(err);
       }
@@ -64,14 +65,13 @@ const likeCard = (req, res, next) => {
     .orFail()
     .populate(['owner', 'likes'])
     .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Карточка с таким ID не найдена');
-      }
       res.status(OK_STATUS).send(card);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        throw new BadRequestError('Неверный ID');
+        next(new BadRequestError('Неверный ID'));
+      } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        next(new NotFoundError('Карточка с таким ID не найдена'));
       } else {
         next(err);
       }
@@ -86,14 +86,13 @@ const dislikeCard = (req, res, next) => {
   )
     .orFail()
     .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Карточка с таким ID не найдена');
-      }
       res.status(OK_STATUS).send(card);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        throw new BadRequestError('Неверный ID');
+        next(new BadRequestError('Неверный ID'));
+      } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        next(new NotFoundError('Карточка с таким ID не найдена'));
       } else {
         next(err);
       }
