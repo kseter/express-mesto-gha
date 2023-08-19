@@ -20,10 +20,10 @@ const deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(cardId)
     .orFail()
     .then((card) => {
-      if (card.owner._id !== req.user._id) {
+      if (card.owner !== req.user._id) {
         throw new NoRightsError('Нет прав для удаления карточки');
       }
-      res.send(card);
+      res.status(OK_STATUS).send(card);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
