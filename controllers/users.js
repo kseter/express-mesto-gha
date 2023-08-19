@@ -23,12 +23,14 @@ const getUserInfo = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь не найден');
-      }
       res.status(OK_STATUS).send(user);
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        next(new NotFoundError('Пользователь не найден'));
+      }
+      next(err);
+    });
 };
 
 const getUserByID = (req, res, next) => {
@@ -36,16 +38,13 @@ const getUserByID = (req, res, next) => {
   User.findById(userId)
     .orFail()
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь не найден');
-      }
       res.status(OK_STATUS).send(user);
     })
     .catch((err) => {
-      console.log(mongoose.Error);
-      console.log(mongoose.Error);
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Некорректный ID'));
+      } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        next(new NotFoundError('Пользователь не найден'));
       } else {
         next(err);
       }

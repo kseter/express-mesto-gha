@@ -6,14 +6,14 @@ const validateSignUp = celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(/^https?:\/\/(\w+[./])*(\w+:\d{0,5}\/)?/),
     email: Joi.string().email().required(),
-    password: Joi.string().min(5),
+    password: Joi.string().min(5).required(),
   }),
 });
 
 const validateSignIn = celebrate({
   [Segments.BODY]: Joi.object().keys({
     email: Joi.string().email().required(),
-    password: Joi.string().min(5),
+    password: Joi.string().min(5).required(),
   }),
 });
 
@@ -45,7 +45,7 @@ const validateUserId = celebrate({
 
 const validateCardId = celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    userId: Joi.string().hex().length(24).required(),
+    cardId: Joi.string().hex().length(24).required(),
   }),
 });
 

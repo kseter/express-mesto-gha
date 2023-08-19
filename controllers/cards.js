@@ -47,9 +47,8 @@ const createCard = (req, res, next) => {
       res.status(CREATED_STATUS).send(card);
     })
     .catch((err) => {
-      console.log(mongoose.Error);
       if (err instanceof mongoose.Error.ValidationError) {
-        throw new BadRequestError('Переданы некорректные данные при создании карточки');
+        next(new BadRequestError('Переданы некорректные данные при создании карточки'));
       } else {
         next(err);
       }
@@ -71,7 +70,6 @@ const likeCard = (req, res, next) => {
       res.status(OK_STATUS).send(card);
     })
     .catch((err) => {
-      console.log(mongoose.Error);
       if (err instanceof mongoose.Error.CastError) {
         throw new BadRequestError('Неверный ID');
       } else {
@@ -94,7 +92,6 @@ const dislikeCard = (req, res, next) => {
       res.status(OK_STATUS).send(card);
     })
     .catch((err) => {
-      console.log(mongoose.Error);
       if (err instanceof mongoose.Error.CastError) {
         throw new BadRequestError('Неверный ID');
       } else {
