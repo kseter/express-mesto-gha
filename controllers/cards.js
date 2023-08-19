@@ -21,7 +21,7 @@ const deleteCard = (req, res, next) => {
     .orFail()
     .then((card) => {
       if (card.owner._id !== req.user._id) {
-        next(new NoRightsError('Нет прав для удаления карточки'));
+        throw new NoRightsError('Нет прав для удаления карточки');
       }
       res.send(card);
     })

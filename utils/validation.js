@@ -32,8 +32,8 @@ const validateAvatar = celebrate({
 
 const validateCreateCard = celebrate({
   [Segments.BODY]: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string().pattern(/^https?:\/\/(\w+[./])*(\w+:\d{0,5}\/)?/),
+    name: Joi.string().min(2).max(30).required(),
+    link: Joi.string().pattern(/^https?:\/\/(\w+[./])*(\w+:\d{0,5}\/)?/).required(),
   }),
 });
 
