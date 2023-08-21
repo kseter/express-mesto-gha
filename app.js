@@ -20,10 +20,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
 app.use(errors());
-app.use(errorHandler);
-app.use('*', (req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
+app.use('*', () => {
+  throw new NotFoundError('Страница не найдена');
 });
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`App has started on port ${PORT}...`);
