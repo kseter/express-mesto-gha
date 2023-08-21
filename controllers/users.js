@@ -28,6 +28,7 @@ const getUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
         next(new NotFoundError('Пользователь не найден'));
+        return;
       }
       next(err);
     });
@@ -45,9 +46,9 @@ const getUserByID = (req, res, next) => {
         next(new BadRequestError('Некорректный ID'));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
         next(new NotFoundError('Пользователь не найден'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 
@@ -81,6 +82,7 @@ const createUser = (req, res, next) => {
           next(new ConflictError('Пользователь с такие email уже зарегистрирован'));
         } else if (err instanceof mongoose.Error.ValidationError) {
           next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
+          return;
         }
         next(err);
       }));
@@ -101,9 +103,9 @@ const updateAvatar = (req, res, next) => {
       console.log(mongoose.Error);
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Некорректно введены данные'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 
@@ -121,9 +123,9 @@ const updateUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Некорректно введены данные'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 

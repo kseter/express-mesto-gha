@@ -24,7 +24,7 @@ const deleteCard = (req, res, next) => {
       } else if (card.owner.toString() !== req.user._id) {
         throw new NoRightsError('Нет прав для удаления карточки');
       }
-      Card.findByIdAndRemove(cardId)
+      Card.deleteOne(card)
         .then((removedCard) => {
           res.send({ message: 'Карточка удалена', card: removedCard });
         });
@@ -32,9 +32,9 @@ const deleteCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequestError('Неверный ID'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 
@@ -52,9 +52,9 @@ const createCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Переданы некорректные данные при создании карточки'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 
@@ -74,9 +74,9 @@ const likeCard = (req, res, next) => {
         next(new BadRequestError('Неверный ID'));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
         next(new NotFoundError('Карточка с таким ID не найдена'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 
@@ -95,9 +95,9 @@ const dislikeCard = (req, res, next) => {
         next(new BadRequestError('Неверный ID'));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
         next(new NotFoundError('Карточка с таким ID не найдена'));
-      } else {
-        next(err);
+        return;
       }
+      next(err);
     });
 };
 
