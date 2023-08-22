@@ -15,10 +15,10 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_KEY);
   } catch (err) {
-    next(err);
+    next(new AuthError('Токен не валиден или устарел'));
+    return;
   }
 
   req.user = payload;
-
   next();
 };

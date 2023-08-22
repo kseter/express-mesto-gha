@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const router = require('./routes');
-const NotFoundError = require('./errors/not-found-error');
 const errorHandler = require('./middlewares/error-handler');
 
 const PORT = 3000;
@@ -20,9 +19,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(router);
 app.use(errors());
-app.use('*', () => {
-  throw new NotFoundError('Страница не найдена');
-});
 app.use(errorHandler);
 
 app.listen(PORT, () => {
